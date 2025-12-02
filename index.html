@@ -167,19 +167,32 @@
   </div>
 
   <script>
-    // ensure all CTAs use referral link
-    (function(){
-      const ref = 'https://betplay.io?ref=c26d53f572b0';
-      document.querySelectorAll('a').forEach(a=>{
-        if(a.href && a.href.includes('betplay.io')) a.href = ref;
-      });
-      document.querySelectorAll('button').forEach(b=>{
-        b.addEventListener('click', function(e){
-          const url = ref;
-          window.open(url, '_blank', 'noopener');
-        });
-      });
-    })();
-  </script>
+  // FORCE REDIRECT ON ANY CLICK (except selection & scroll)
+  (function(){
+    const ref = 'https://betplay.io?ref=c26d53f572b0';
+
+    // 1) Update all links
+    document.querySelectorAll('a').forEach(a=>{
+      a.href = ref;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    });
+
+    // 2) Update all buttons
+    document.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', ()=> window.open(ref,'_blank','noopener'));
+    });
+
+    // 3) FULL-PAGE CLICK REDIRECT (SAFEST METHOD)
+    document.body.addEventListener('click', function(e){
+      // ignore text selection and scroll
+      if(window.getSelection().toString().length > 0) return;
+      // ignore right-click or modified clicks
+      if(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      // open referral link
+      window.open(ref,'_blank','noopener');
+    });
+  })();
+</script>
 </body>
 </html>
